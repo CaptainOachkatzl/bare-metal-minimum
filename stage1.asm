@@ -12,7 +12,7 @@ _start:
     cld
 
     mov al, '1'
-    call bios_print_char
+    call real_mode_print_char
 
 load_sector_2:
     mov  al, 0x01           ; load 1 sector
@@ -23,7 +23,7 @@ load_sector_2:
     call read_sectors_16
     jnc  execute_stage2           ; if carry flag is set, either the disk system wouldn't reset, or we exceeded our maximum attempts and the disk is probably shagged
     mov  al, 'E'
-    call bios_print_char
+    call real_mode_print_char
     jmp loop
 
 execute_stage2:
@@ -64,7 +64,32 @@ read_sectors_16:
     pop ax
     retn
 
-bios_print_char:
+# print a number in hex
+# IN
+#   bx: the number
+# CLOBBER
+#   al, cx
+real_mode_print_hex:
+    mov cx, 4
+.lp:
+    mov al, bh
+    shr al, 4
+
+    cmp al, 0xA
+    jb .below_0xA
+
+    add al, 'A' - 0xA - '0'
+.below_0xA:
+    add al, '0'
+
+    call real_mode_print_char
+
+    shl bx, 4
+    loop .lp
+
+    ret
+
+real_mode_print_char:
     push bx
     xor bx, bx              ; Attribute=0/Current Video Page=0
     mov ah, 0x0e
