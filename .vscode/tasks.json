@@ -36,6 +36,12 @@
                 "kind": "build",
                 "isDefault": true
             },
+            "dependsOn": "objcopy to binary"
+        },
+        {
+            "label": "install usb",
+            "type": "shell",
+            "command": "sudo dd if=program.bin of=/dev/sdb1 && sync",
             "dependsOn": "objcopy to binary",
             "problemMatcher": []
         }
