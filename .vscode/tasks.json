@@ -16,7 +16,7 @@
         {
             "label": "linker script",
             "type": "shell",
-            "command": "ld -m elf_x86_64 -o program stage1.elf stage2.elf -nostdlib -T linker.ld",
+            "command": "ld -m elf_x86_64 -o program stage2.elf stage1.elf -nostdlib -T linker.ld",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -46,7 +46,8 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "dependsOn": "objcopy to binary"
+            "dependsOn": "objcopy to binary",
+            "problemMatcher": []
         },
         {
             "label": "install usb",
