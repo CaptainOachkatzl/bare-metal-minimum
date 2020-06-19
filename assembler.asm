@@ -1,5 +1,7 @@
 global _start
 
+BITS 16
+
 _start:
     xor ax, ax
     mov ds, ax
