@@ -1,2 +1,6 @@
 
 *.elf
+
+program
+
+program.bin
