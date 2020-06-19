@@ -17,6 +17,9 @@ _start:
     mov al, '1'
     call real_mode_print_char
 
+    mov bx, [mbr_id]
+    call real_mode_print_hex
+
 load_sector_2:
     mov  al, 0x01           ; load 1 sector
     mov  bx, 0x7E00         ; destination (might as well load it right after your bootloader)
@@ -100,4 +103,6 @@ real_mode_print_char:
 
 ; boot signature
 TIMES 510-($-$$) db 0
+
+mbr_id:
 dw 0xAA55
