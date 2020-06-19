@@ -11,6 +11,9 @@ _start:
     mov sp, _start
     cld
 
+    mov ax, 0x7c0
+    mov ds, ax
+
     mov al, '1'
     call real_mode_print_char
 
@@ -29,8 +32,6 @@ load_sector_2:
 execute_stage2:
     jmp _stage2
 
-    mov ax, 0x7c0
-    mov ds, ax
 loop:
     jmp loop
 
