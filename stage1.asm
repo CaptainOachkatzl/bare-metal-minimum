@@ -5,7 +5,6 @@ BITS 16
 
 _start:
     xor ax, ax
-    mov ds, ax
     mov es, ax
     mov gs, ax
     mov ss, ax
@@ -30,6 +29,8 @@ load_sector_2:
 execute_stage2:
     jmp _stage2
 
+    mov ax, 0x7c0
+    mov ds, ax
 loop:
     jmp loop
 
