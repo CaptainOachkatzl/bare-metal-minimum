@@ -9,12 +9,6 @@
             "command": "nasm -f elf64 assembler.asm -o object.elf"
         },
         {
-            "label": "gcc build",
-            "type": "shell",
-            "command": "gcc -o assembler object.elf -nostdlib",
-            "dependsOn": "build assembly"
-        },
-        {
             "label": "linker script",
             "type": "shell",
             "command": "ld.lld -m elf_x86_64 -o program object.elf -nostdlib -T linker.ld",
@@ -22,18 +16,27 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "dependsOn": "build assembly",
-            "problemMatcher": []
+            "dependsOn": "build assembly"
         },
         {
-            "label": "qemu run",
+            "label": "objcopy to binary",
             "type": "shell",
-            "command": "qemu-system-x86_64 -drive format=raw,file=program",
+            "command": "objcopy -I elf64-x86-64 -O binary --binary-architecture=i386:x86-64 program program.bin",
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "dependsOn": "linker script",
+            "dependsOn": "linker script"
+        },
+        {
+            "label": "qemu run",
+            "type": "shell",
+            "command": "qemu-system-x86_64 -drive format=raw,file=program.bin",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": "objcopy to binary",
             "problemMatcher": []
         }
     ]
