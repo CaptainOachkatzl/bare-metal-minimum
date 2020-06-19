@@ -27,13 +27,18 @@ load_sector_2:
     ; mov  dl, [BootDrv]      ; boot drive
     xor  dh, dh             ; head 0
     call read_sectors_16
-    jnc  execute_stage2           ; if carry flag is set, either the disk system wouldn't reset, or we exceeded our maximum attempts and the disk is probably shagged
-    mov  al, 'E'
+    jnc execute_stage2           ; if carry flag is set, either the disk system wouldn't reset, or we exceeded our maximum attempts and the disk is probably shagged
+    jmp error
     call real_mode_print_char
     jmp loop
 
 execute_stage2:
     jmp _stage2
+
+error:
+    mov al, 'E'
+    call real_mode_print_char
+    jmp loop
 
 loop:
     jmp loop
