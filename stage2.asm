@@ -1,19 +1,15 @@
-global _start
+global _stage2
 
 BITS 16
 
-_start:
-    xor ax, ax
-    mov ds, ax
-    mov ss, ax
-
-    mov al, 'a'
+_stage2:
+    mov al, '2'
     call bios_print_char
 
 loop:
     jmp loop
 
-bios_print_char:
+    bios_print_char:
     push bx
     xor bx, bx              ; Attribute=0/Current Video Page=0
     mov ah, 0x0e
@@ -23,4 +19,4 @@ bios_print_char:
 
 ; boot signature
 TIMES 510-($-$$) db 0
-dw 0xAA55
+dw 0xBB66

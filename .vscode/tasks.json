@@ -4,19 +4,28 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build assembly",
+            "label": "build stage1",
             "type": "shell",
-            "command": "nasm -f elf64 assembler.asm -o object.elf"
+            "command": "nasm -f elf64 stage1.asm -o stage1.elf"
+        },
+        {
+            "label": "build stage2",
+            "type": "shell",
+            "command": "nasm -f elf64 stage2.asm -o stage2.elf"
         },
         {
             "label": "linker script",
             "type": "shell",
-            "command": "ld.lld -m elf_x86_64 -o program object.elf -nostdlib -T linker.ld",
+            "command": "ld -m elf_x86_64 -o program stage1.elf stage2.elf -nostdlib -T linker.ld",
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "dependsOn": "build assembly"
+            "dependsOn": [
+                "build stage1",
+                "build stage2"
+            ],
+            "problemMatcher": []
         },
         {
             "label": "objcopy to binary",
@@ -26,7 +35,8 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "dependsOn": "linker script"
+            "dependsOn": "linker script",
+            "problemMatcher": []
         },
         {
             "label": "qemu run",
