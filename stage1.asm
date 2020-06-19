@@ -6,7 +6,11 @@ BITS 16
 _start:
     xor ax, ax
     mov ds, ax
+    mov es, ax
+    mov gs, ax
     mov ss, ax
+    mov sp, _start
+    cld
 
     mov al, '1'
     call bios_print_char
