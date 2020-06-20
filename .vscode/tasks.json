@@ -14,9 +14,9 @@
             "command": "nasm -f elf64 stage2.asm -o stage2.elf"
         },
         {
-            "label": "linker script",
+            "label": "link object files",
             "type": "shell",
-            "command": "ld -m elf_x86_64 -o program stage2.elf stage1.elf -nostdlib -T linker.ld",
+            "command": "ld -m elf_x86_64 -o program.bin stage2.elf stage1.elf -nostdlib -T linker.ld",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -28,17 +28,6 @@
             "problemMatcher": []
         },
         {
-            "label": "objcopy to binary",
-            "type": "shell",
-            "command": "objcopy -I elf64-x86-64 -O binary --binary-architecture=i386:x86-64 program program.bin",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": "linker script",
-            "problemMatcher": []
-        },
-        {
             "label": "qemu run",
             "type": "shell",
             "command": "qemu-system-x86_64 -drive format=raw,file=program.bin",
@@ -46,14 +35,14 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "dependsOn": "objcopy to binary",
+            "dependsOn": "link object files",
             "problemMatcher": []
         },
         {
             "label": "install usb",
             "type": "shell",
             "command": "sudo dd if=program.bin of=/dev/sdb1 && sync",
-            "dependsOn": "objcopy to binary",
+            "dependsOn": "link object files",
             "problemMatcher": []
         }
     ]
