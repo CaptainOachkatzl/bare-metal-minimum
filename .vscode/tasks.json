@@ -19,16 +19,6 @@
             "dependsOn": "build assembly"
         },
         {
-            "label": "objcopy to binary",
-            "type": "shell",
-            "command": "objcopy -I elf64-x86-64 -O binary --binary-architecture=i386:x86-64 program program.bin",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": "linker script"
-        },
-        {
             "label": "qemu run",
             "type": "shell",
             "command": "qemu-system-x86_64 -drive format=raw,file=program.bin",
@@ -36,13 +26,13 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "dependsOn": "objcopy to binary"
+            "dependsOn": "linker script"
         },
         {
             "label": "install usb",
             "type": "shell",
-            "command": "sudo dd if=program.bin of=/dev/sdb1 && sync",
-            "dependsOn": "objcopy to binary",
+            "command": "sudo dd if=program.bin of=/dev/<INSERT YOUR DEVICE HERE> && sync",
+            "dependsOn": "linker script",
             "problemMatcher": []
         }
     ]
