@@ -20,7 +20,6 @@ _start:
     call real_mode_new_line
 
     mov dh, 0x0
-    mov dl, 0x0
     mov bx, dx
     call real_mode_print_hex
 
