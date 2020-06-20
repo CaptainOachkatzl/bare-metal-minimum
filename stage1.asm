@@ -11,18 +11,22 @@ _start:
     mov gs, ax
     mov ss, ax
     mov sp, 0x7C00      ; right before MBR, counting upwards
-    cld
 
     mov ax, 0x7C0       ; set DS to 0x7c0 so pointing at 0x0 resolves to 0x7C0:x0000 = 0x7C00
     mov ds, ax
 
-    mov al, '1'         ; mark start of stage 1 by printing "1"
+    cld                 ; set direction flag to make string operations count forward
+
+ ; mark start of stage 1 by printing "1"
+    mov al, '1'
     call real_mode_print_char
     call real_mode_new_line
 
+print_drive_number:
+; drive# is put into DL by BIOS
     mov dh, 0x0
     mov bx, dx
-    call real_mode_print_hex    ; print drive# which is put into DL by bios
+    call real_mode_print_hex
 
 load_sector2:
     mov  al, 0x01           ; load 1 sector
