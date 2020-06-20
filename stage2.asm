@@ -1,4 +1,5 @@
 global _stage2
+global _stage2data
 
 BITS 16
 
@@ -19,4 +20,5 @@ loop:
 
 ; boot signature
 TIMES 510-($-$$) db 0
-dw 0xBB66
+_stage2data:
+dw 0xCC77
