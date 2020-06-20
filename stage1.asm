@@ -5,6 +5,7 @@ extern _stage2data
 BITS 16
 
 _start:
+; init registers
     xor ax, ax
     mov es, ax
     mov gs, ax
@@ -12,37 +13,39 @@ _start:
     mov sp, 0x7C00      ; right before MBR, counting upwards
     cld
 
-    mov ax, 0x7C0
+    mov ax, 0x7C0       ; set DS to 0x7c0 so pointing at 0x0 resolves to 0x7C0:x0000 = 0x7C00
     mov ds, ax
 
-    mov al, '1'
+    mov al, '1'         ; mark start of stage 1 by printing "1"
     call real_mode_print_char
     call real_mode_new_line
 
     mov dh, 0x0
     mov bx, dx
-    call real_mode_print_hex
+    call real_mode_print_hex    ; print drive# which is put into DL by bios
 
-load_sector_2:
+load_sector2:
     mov  al, 0x01           ; load 1 sector
-    mov  bx, 0x7E00         ; destination (might as well load it right after your bootloader)
+    mov  bx, 0x7E00         ; destination, right after your bootloader
     mov  cx, 0x0002         ; cylinder 0, sector 2
     ; mov  dl, [BootDrv]      ; boot drive
     xor  dh, dh             ; head 0
     call read_sectors_16
-    jnc execute_stage2           ; if carry flag is set, either the disk system wouldn't reset, or we exceeded our maximum attempts and the disk is probably shagged
+    jnc execute_stage2           ; if carry flag is set, disk read failed
     jmp error
 
 execute_stage2:
-    mov bx, [_stage2data]
+    mov bx, [_stage2data]       ; print data at _stage2data to confirm stage 2 was loaded
     call real_mode_print_hex
 
-    jmp _stage2
+    jmp _stage2                 ; start execude instructions of _stage2
 
 error:
+; print "E" if an error occurs
     mov al, 'E'
     call real_mode_print_char
 
+; infinite loop
 loop:
     jmp loop
 
