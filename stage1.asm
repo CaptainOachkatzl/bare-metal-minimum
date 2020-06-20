@@ -1,5 +1,6 @@
 global _start
 extern _stage2
+extern _stage2data
 
 BITS 16
 
@@ -11,13 +12,16 @@ _start:
     mov sp, _start
     cld
 
-    mov ax, 0x7c0
+    mov ax, 0x7C0
     mov ds, ax
 
     mov al, '1'
     call real_mode_print_char
+    call real_mode_new_line
 
-    mov bx, [mbr_id]
+    mov dh, 0x0
+    mov dl, 0x0
+    mov bx, dx
     call real_mode_print_hex
 
 load_sector_2:
@@ -29,16 +33,16 @@ load_sector_2:
     call read_sectors_16
     jnc execute_stage2           ; if carry flag is set, either the disk system wouldn't reset, or we exceeded our maximum attempts and the disk is probably shagged
     jmp error
-    call real_mode_print_char
-    jmp loop
 
 execute_stage2:
+    mov bx, [_stage2data]
+    call real_mode_print_hex
+
     jmp _stage2
 
 error:
     mov al, 'E'
     call real_mode_print_char
-    jmp loop
 
 loop:
     jmp loop
@@ -96,7 +100,15 @@ real_mode_print_hex:
     shl bx, 4
     loop .lp
 
+    call real_mode_new_line
+
     ret
+
+real_mode_new_line:
+    mov al, 0x0D
+    call real_mode_print_char
+    mov al, 0x0A
+    call real_mode_print_char
 
 real_mode_print_char:
     push bx
