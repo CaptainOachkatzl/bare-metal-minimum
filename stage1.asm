@@ -1,5 +1,5 @@
 global _start
-global real_mode_print_char
+global real_mode_print_string
 extern _stage2
 
 BITS 16
@@ -18,8 +18,8 @@ _start:
     cld                 ; set direction flag to make string operations count forward
 
  ; mark start of stage 1 by printing "1"
-    mov al, '1'
-    call real_mode_print_char
+    mov si, stage1_loading_string
+    call real_mode_print_string
     call real_mode_new_line
 
 load_sector2:
@@ -101,11 +101,26 @@ real_mode_print_hex:
 
     ret
 
+; print string
+; IN
+;   si : pointer to string
+; CLOBBER
+;   al
+real_mode_print_string:
+    lodsb
+    or al, al
+    jz .done
+    call real_mode_print_char
+    jmp real_mode_print_string
+.done: 
+    ret
+
 real_mode_new_line:
     mov al, 0x0D
     call real_mode_print_char
     mov al, 0x0A
     call real_mode_print_char
+    ret
 
 real_mode_print_char:
     push bx
@@ -115,7 +130,9 @@ real_mode_print_char:
     pop bx
     ret
 
-; boot signature
-TIMES 510-($-$$) db 0
+stage1_loading_string:
+    db 'Stage 1...', 0
 
-dw 0xAA55
+; boot signature
+    TIMES 510-($-$$) db 0
+    dw 0xAA55
