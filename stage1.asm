@@ -37,8 +37,8 @@ execute_stage2:
 
 error:
 ; print "E" if an error occurs
-    mov al, 'E'
-    call real_mode_print_char
+    mov si, error_loading_string
+    call real_mode_print_string
 
 ; infinite loop
 loop:
@@ -132,6 +132,8 @@ real_mode_print_char:
 
 stage1_loading_string:
     db 'Stage 1...', 0
+error_loading_string:
+    db 'Error while loading stage 2 from disk!', 0
 
 ; boot signature
     TIMES 510-($-$$) db 0
