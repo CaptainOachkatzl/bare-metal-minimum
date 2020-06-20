@@ -1,13 +1,8 @@
-This is the minimum you have to do, to get a program to run on a x86_64 architecture with legacy BIOS.  
+Shows how to setup a two (or more) stage boot loader. Also includes the linking of two assembly files into a combined binary with a linker script file.
 Navigate to <a href=".vscode/tasks.json">.vscode/tasks.json</a> to see the step by step commands.  
-  
-Documentation:  
-"assembler.asm" is the program that the BIOS is going to run. The first line "global \_start" is exposing the address so the linker can find it.  
-"linker.ld" is the LD script file and "ENTRY(\_start)" sets the start of the execution to the previously exposed "\_start" address.  
-  
+
 Build steps:  
-1.) The "assembler.asm" file is build with NASM to get an object file "object.elf".  
-2.) The linker creates a runnable file "program" from the object file  
-3.) "objcopy" creates a bootable binary "program.bin" from the runnable  
+1.) The files "stage1.asm" and "stage.asm" are build with NASM to get their respective object file in .elf format  
+2.) The linker uses the linker script "linker.ld" to create a runnable file "program" from the object files  
   
 Run it either in Qemu (see tasks) or write it on a USB (see tasks) to run it on hardware.  
