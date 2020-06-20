@@ -4,29 +4,28 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build assembly",
+            "label": "build stage1",
             "type": "shell",
-            "command": "nasm -f elf64 assembler.asm -o object.elf"
+            "command": "nasm -f elf64 stage1.asm -o stage1.elf"
         },
         {
-            "label": "linker script",
+            "label": "build stage2",
             "type": "shell",
-            "command": "ld.lld -m elf_x86_64 -o program object.elf -nostdlib -T linker.ld",
+            "command": "nasm -f elf64 stage2.asm -o stage2.elf"
+        },
+        {
+            "label": "link object files",
+            "type": "shell",
+            "command": "ld -m elf_x86_64 -o program.bin stage2.elf stage1.elf -nostdlib -T linker.ld",
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "dependsOn": "build assembly"
-        },
-        {
-            "label": "objcopy to binary",
-            "type": "shell",
-            "command": "objcopy -I elf64-x86-64 -O binary --binary-architecture=i386:x86-64 program program.bin",
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "dependsOn": "linker script"
+            "dependsOn": [
+                "build stage1",
+                "build stage2"
+            ],
+            "problemMatcher": []
         },
         {
             "label": "qemu run",
@@ -36,13 +35,14 @@
                 "kind": "build",
                 "isDefault": true
             },
-            "dependsOn": "objcopy to binary"
+            "dependsOn": "link object files",
+            "problemMatcher": []
         },
         {
             "label": "install usb",
             "type": "shell",
-            "command": "sudo dd if=program.bin of=/dev/sdb1 && sync",
-            "dependsOn": "objcopy to binary",
+            "command": "sudo dd if=program.bin of=/dev/sdb && sync",
+            "dependsOn": "link object files",
             "problemMatcher": []
         }
     ]
