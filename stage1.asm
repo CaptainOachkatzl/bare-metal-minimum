@@ -9,7 +9,7 @@ _start:
     mov es, ax
     mov gs, ax
     mov ss, ax
-    mov sp, _start
+    mov sp, 0x7C00      ; right before MBR, counting upwards
     cld
 
     mov ax, 0x7C0
