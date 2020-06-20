@@ -1,6 +1,6 @@
 global _start
+global real_mode_print_char
 extern _stage2
-extern _stage2data
 
 BITS 16
 
@@ -22,26 +22,17 @@ _start:
     call real_mode_print_char
     call real_mode_new_line
 
-print_drive_number:
-; drive# is put into DL by BIOS
-    mov dh, 0x0
-    mov bx, dx
-    call real_mode_print_hex
-
 load_sector2:
+; boot drive is stored in DL by bios
     mov  al, 0x01           ; load 1 sector
     mov  bx, 0x7E00         ; destination, right after your bootloader
     mov  cx, 0x0002         ; cylinder 0, sector 2
-    ; mov  dl, [BootDrv]      ; boot drive
     xor  dh, dh             ; head 0
     call read_sectors_16
     jnc execute_stage2           ; if carry flag is set, disk read failed
     jmp error
 
 execute_stage2:
-    mov bx, [_stage2data]       ; print data at _stage2data to confirm stage 2 was loaded
-    call real_mode_print_hex
-
     jmp _stage2                 ; start execude instructions of _stage2
 
 error:
@@ -83,11 +74,11 @@ read_sectors_16:
     pop ax
     retn
 
-# print a number in hex
-# IN
-#   bx: the number
-# CLOBBER
-#   al, cx
+; print a number in hex
+; IN
+;   bx: the number
+; CLOBBER
+;   al, cx
 real_mode_print_hex:
     mov cx, 4
 .lp:
@@ -127,5 +118,4 @@ real_mode_print_char:
 ; boot signature
 TIMES 510-($-$$) db 0
 
-mbr_id:
 dw 0xAA55
