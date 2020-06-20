@@ -17,7 +17,7 @@ _start:
 
     cld                 ; set direction flag to make string operations count forward
 
- ; mark start of stage 1 by printing "1"
+ ; mark start of stage 1 by printing loading string
     mov si, stage1_loading_string
     call real_mode_print_string
     call real_mode_new_line
@@ -36,7 +36,7 @@ execute_stage2:
     jmp _stage2                 ; start execude instructions of _stage2
 
 error:
-; print "E" if an error occurs
+; print error message
     mov si, error_loading_string
     call real_mode_print_string
 
