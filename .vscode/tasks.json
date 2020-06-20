@@ -41,7 +41,7 @@
         {
             "label": "install usb",
             "type": "shell",
-            "command": "sudo dd if=program.bin of=/dev/sdb1 && sync",
+            "command": "sudo dd if=program.bin of=/dev/sdb && sync",
             "dependsOn": "link object files",
             "problemMatcher": []
         }
