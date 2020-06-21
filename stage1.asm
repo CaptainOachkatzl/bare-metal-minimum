@@ -22,6 +22,16 @@ _start:
     call real_mode_print_string
     call real_mode_new_line
 
+enable_a20:
+; enable A20-Line via IO-Port 92
+    in al, 0x92
+    test al, 2
+    jnz post_a20_enabled
+    or al, 2
+    and al, 0xFE
+    out 0x92, al
+post_a20_enabled:
+
 load_sector2:
 ; boot drive is stored in DL by bios
     mov  al, 0x01           ; load 1 sector
