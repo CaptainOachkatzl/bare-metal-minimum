@@ -28,7 +28,6 @@ load_gdt:
 
     lgdt [gdt32info]
 
-    jmp loop16
 
 
 ; set protected mode bit: cr0 - bit 0
