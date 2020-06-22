@@ -23,6 +23,11 @@ _stage2:
     mov si, stage2_loading_string
     call real_mode_print_string
 
+load_gdt:
+    cli
+
+    lgdt [gdt32info]
+
     jmp loop16
 
 
