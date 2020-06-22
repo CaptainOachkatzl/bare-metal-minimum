@@ -47,6 +47,20 @@ clear_prefetch:
     mov gs, ax
     mov ss, ax
     mov esp, STACK32_TOP
+
+    db 0x66
+    db 0xEA
+    dd code_32bit
+    dw CODE_SEG
+
+BITS 32
+code_32bit:
+    mov eax,0xb8000
+    mov word [Eax],0x4141
+
+loop32:
+    jmp loop32    
+
 stage2_loading_string:
     db 'Stage 2...', 0
 
