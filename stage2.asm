@@ -28,18 +28,18 @@ load_gdt:
 
     lgdt [gdt32info]
 
-
-
-; set protected mode bit: cr0 - bit 0
+    ; set protected mode bit: cr0 - bit 0
     mov eax, cr0
     or al, 1
     mov cr0, eax
 
+    ; jmp instruction clears prefetch
     jmp clear_prefetch
     nop
     nop
 
 clear_prefetch:
+    ; set segment registers to GDT data selector
     mov ax, DATA_SEG        ; 0x10 is flat selector for data
     mov ds, ax
     mov es, ax
@@ -48,6 +48,7 @@ clear_prefetch:
     mov ss, ax
     mov esp, STACK32_TOP
 
+    ; long jmp to 0x8:code_bit32
     db 0x66
     db 0xEA
     dd code_32bit
@@ -55,6 +56,7 @@ clear_prefetch:
 
 BITS 32
 code_32bit:
+    ; write character to VGA buffer
     mov eax,0xb8000
     mov word [Eax],0x4141
 
