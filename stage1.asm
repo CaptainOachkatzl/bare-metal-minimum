@@ -30,7 +30,11 @@ enable_a20:
     or al, 2
     and al, 0xFE
     out 0x92, al
+
 post_a20_enabled:
+    mov si, enabled_a20_string
+    call real_mode_print_string
+    call real_mode_new_line
 
 load_sector2:
 ; boot drive is stored in DL by bios
@@ -115,6 +119,8 @@ real_mode_print_char:
 
 stage1_loading_string:
     db 'Stage 1...', 0
+enabled_a20_string:
+    db 'Enabled A20 line', 0
 error_loading_string:
     db 'Error while loading stage 2 from disk!', 0
 
