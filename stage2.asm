@@ -31,6 +31,18 @@ load_gdt:
     jmp loop16
 
 
+; set protected mode bit: cr0 - bit 0
+    mov eax, cr0
+    or al, 1
+    mov cr0, eax
+
+    jmp clear_prefetch
+    nop
+    nop
+
+clear_prefetch:
+    jmp clear_prefetch
+
 stage2_loading_string:
     db 'Stage 2...', 0
 
