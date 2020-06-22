@@ -1,6 +1,15 @@
 global _stage2
 extern real_mode_print_string
 
+STACK32_TOP EQU 0x200000
+VIDEOMEM    EQU 0x0b8000
+BIOS_ENTRY_ADDR EQU 0x7C00
+STAGE2_ENTRY_ADDR EQU 0x7E00
+CODE_SEG EQU codedesc - gdt32
+DATA_SEG EQU datadesc - gdt32
+
+ALIGN 4
+
 BITS 16
 
 _stage2:
