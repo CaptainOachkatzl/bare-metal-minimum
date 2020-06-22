@@ -1,5 +1,6 @@
 global _stage2
 extern real_mode_print_string
+extern real_mode_print_hex
 
 STACK32_TOP EQU 0x200000
 VIDEOMEM    EQU 0x0b8000
@@ -12,12 +13,18 @@ ALIGN 4
 
 BITS 16
 
+debug:
+    mov bx, 0xDEB0
+    call real_mode_print_hex
+loop16:
+    jmp loop16
+
 _stage2:
     mov si, stage2_loading_string
     call real_mode_print_string
 
-loop:
-    jmp loop
+    jmp loop16
+
 
 stage2_loading_string:
     db 'Stage 2...', 0
