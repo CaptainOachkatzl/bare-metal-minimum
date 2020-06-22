@@ -43,7 +43,7 @@ load_sector2:
     jmp error
 
 execute_stage2:
-    jmp _stage2                 ; start execude instructions of _stage2
+    jmp _stage2                 ; start execute instructions of _stage2
 
 error:
 ; print error message
