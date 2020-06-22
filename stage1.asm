@@ -22,6 +22,15 @@ _start:
     call real_mode_print_string
     call real_mode_new_line
 
+load_sector2:
+; boot drive is stored in DL by bios
+    mov  al, 0x01           ; load 1 sector
+    mov  bx, 0x7E00         ; destination, right after your bootloader
+    mov  cx, 0x0002         ; cylinder 0, sector 2
+    xor  dh, dh             ; head 0
+    call read_sectors_16
+    jc error                ; if carry flag is set, disk read failed
+
 enable_a20:
 ; enable A20-Line via IO-Port 92
     in al, 0x92
@@ -35,16 +44,6 @@ post_a20_enabled:
     mov si, enabled_a20_string
     call real_mode_print_string
     call real_mode_new_line
-
-load_sector2:
-; boot drive is stored in DL by bios
-    mov  al, 0x01           ; load 1 sector
-    mov  bx, 0x7E00         ; destination, right after your bootloader
-    mov  cx, 0x0002         ; cylinder 0, sector 2
-    xor  dh, dh             ; head 0
-    call read_sectors_16
-    jnc execute_stage2           ; if carry flag is set, disk read failed
-    jmp error
 
 execute_stage2:
     jmp _stage2                 ; start execute instructions of _stage2
