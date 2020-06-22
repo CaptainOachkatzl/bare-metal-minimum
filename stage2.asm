@@ -41,8 +41,13 @@ load_gdt:
     nop
 
 clear_prefetch:
-    jmp clear_prefetch
-
+    mov ax, DATA_SEG        ; 0x10 is flat selector for data
+    mov ds, ax
+    mov es, ax
+    mov fs, ax
+    mov gs, ax
+    mov ss, ax
+    mov esp, STACK32_TOP
 stage2_loading_string:
     db 'Stage 2...', 0
 
