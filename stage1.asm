@@ -1,5 +1,6 @@
 global _start
 global real_mode_print_string
+global real_mode_print_hex
 extern _stage2
 
 BITS 16
@@ -86,6 +87,34 @@ read_sectors_16:
 .end:
     pop ax
     retn
+
+; print a number in hex
+; IN
+;   bx: the number
+; CLOBBER
+;   al, cx
+real_mode_print_hex:
+    mov cx, 4
+.lp:
+    mov al, bh
+    shr al, 4
+
+    cmp al, 0xA
+    jb .below_0xA
+
+    add al, 'A' - 0xA - '0'
+.below_0xA:
+    add al, '0'
+
+    call real_mode_print_char
+
+    shl bx, 4
+    loop .lp
+
+    call real_mode_new_line
+
+    ret
+
 
 ; print string
 ; IN
