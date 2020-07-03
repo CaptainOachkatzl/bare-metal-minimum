@@ -1,8 +1,4 @@
-Shows how to setup a two (or more) stage boot loader. Also includes the linking of two assembly files into a combined binary with a linker script file.
-Navigate to <a href=".vscode/tasks.json">.vscode/tasks.json</a> to see the step by step commands.  
+After loading stage 2, the program loads a GDT, switches to 32 bit protected mode and prints a string to the VGA buffer.  
+Navigate to <a href=".vscode/tasks.json">.vscode/tasks.json</a> to see the step by step build commands.  
 
-Build steps:  
-1.) The files "stage1.asm" and "stage.asm" are build with NASM to get their respective object file in .elf format  
-2.) The linker uses the linker script "linker.ld" to create a runnable file "program" from the object files  
-  
-Run it either in Qemu (see tasks) or write it on a USB (see tasks) to run it on hardware.  
+Run it either in Qemu (see tasks) or write it on a USB (see tasks) to run it on hardware.
