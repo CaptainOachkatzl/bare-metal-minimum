@@ -69,7 +69,7 @@ stage2_loading_string:
 gdt32info:
     dw gdt32_end - gdt32 - 1    ; size - decrement by 1 because size = 0 is not allowed 
                                 ; and this way size can be the full 65536 bytes
-    dw gdt32                    ; offset/start of table
+    dw gdt32 + MBR_ENTRY_ADDRESS  ; offset/start of table + the MBR offset
     
 gdt32:
     dq 0   ; first segment descriptor of GDT -> unused
