@@ -51,6 +51,10 @@ ALIGN 4     ; align memory to 4 byte / 32 bit
     mov esp, STACK32_TOP    ; initialize 32bit stack
     mov ebp, STACK32_TOP
 
+    ; print company logo on the bottom left
+    mov si, company_logo + MBR_ENTRY_ADDRESS    ; need to offset the address because the GDT entry states the base address offset is 0x0
+    mov ebx, VIDEOMEM + ((VGA_SCREEN_WIDTH) * (VGA_SCREEN_HEIGHT - 1))
+    call print_vga_string_32bit
 
 halt:
     cli
@@ -80,6 +84,9 @@ print_vga_char_32bit:
 
 stage2_loading_string:
     db 'Stage 2...', 0
+
+company_logo:
+    db 'XSWare', 0
 
 gdt32info:
     dw gdt32_end - gdt32 - 1    ; size - decrement by 1 because size = 0 is not allowed 
