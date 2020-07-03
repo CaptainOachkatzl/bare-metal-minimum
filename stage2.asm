@@ -18,6 +18,9 @@ debug:
 loop16:
     jmp loop16
 
+VGA_SCREEN_HEIGHT EQU 25
+VGA_SCREEN_WIDTH EQU 160
+
 _stage2:
     mov si, stage2_loading_string
     call real_mode_print_string
@@ -57,6 +60,27 @@ halt:
     db 0xEA
     dd code_32bit
     dw CODE_SEG
+
+; print string
+; IN
+;   si : pointer to string
+;   ebx : vga start address
+; CLOBBER
+;   ax
+print_vga_string_32bit:
+    lodsb
+    or al, al
+    jz .end_of_string   ; jump if last loaded byte was 0 (end of string)
+    call print_vga_char_32bit
+    add ebx, 2          ; move 'cursor' to the next character position
+    jmp print_vga_string_32bit
+.end_of_string:
+    ret
+
+print_vga_char_32bit:   
+    mov ah, 0x0F        ; print white character on black background
+    mov word [ebx], ax
+    ret
 
 BITS 32
 code_32bit:
