@@ -5,9 +5,8 @@ extern real_mode_print_hex
 STACK32_TOP EQU 0x200000
 VIDEOMEM    EQU 0x0b8000
 MBR_ENTRY_ADDRESS EQU 0x7C00
-STAGE2_ENTRY_ADDR EQU 0x7E00
-CODE_SEG EQU codedesc - gdt32
-DATA_SEG EQU datadesc - gdt32
+CODE_SEG EQU codedesc - gdt32   ; offset of the code segment selector in the GDP
+DATA_SEG EQU datadesc - gdt32   ; offset of the data segment selector in the GDP
 
 ALIGN 4
 
