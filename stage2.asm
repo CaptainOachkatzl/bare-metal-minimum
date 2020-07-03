@@ -35,31 +35,27 @@ load_gdt:
     or al, 1
     mov cr0, eax
 
-    ; jmp instruction clears prefetch
-    jmp clear_prefetch
-    nop
-    nop
+    jmp CODE_SEG:code_32bit + MBR_ENTRY_ADDRESS
 
-clear_prefetch:
+code_32bit:
+BITS 32     ; add the 32 bit prefix to all the instructions after this
+ALIGN 4     ; align memory to 4 byte / 32 bit
+
     ; set segment registers to GDT data selector
-    mov ax, DATA_SEG        ; 0x10 is flat selector for data
-    mov ds, ax
-    mov es, ax
-    mov fs, ax
-    mov gs, ax
-    mov ss, ax
-    mov esp, STACK32_TOP
+    mov eax, DATA_SEG       ; set to data selector of GDT
+    mov ds, eax
+    mov es, eax
+    mov fs, eax
+    mov gs, eax
+    mov ss, eax
+    mov esp, STACK32_TOP    ; initialize 32bit stack
+    mov ebp, STACK32_TOP
+
 
 halt:
     cli
     hlt
     jmp halt
-
-    ; long jmp to 0x8:code_bit32
-    db 0x66
-    db 0xEA
-    dd code_32bit
-    dw CODE_SEG
 
 ; print string
 ; IN
@@ -81,15 +77,6 @@ print_vga_char_32bit:
     mov ah, 0x0F        ; print white character on black background
     mov word [ebx], ax
     ret
-
-BITS 32
-code_32bit:
-    ; write character to VGA buffer
-    mov eax,0xb8000
-    mov word [Eax],0x4141
-
-loop32:
-    jmp loop32    
 
 stage2_loading_string:
     db 'Stage 2...', 0
