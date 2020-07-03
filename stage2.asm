@@ -3,11 +3,12 @@ extern real_mode_print_string
 extern real_mode_print_hex
 
 STACK32_TOP EQU 0x200000
-VIDEOMEM    EQU 0x0b8000
+
 MBR_ENTRY_ADDRESS EQU 0x7C00
 CODE_SEG EQU codedesc - gdt32   ; offset of the code segment selector in the GDP
 DATA_SEG EQU datadesc - gdt32   ; offset of the data segment selector in the GDP
 
+VGA_VIDEOMEM    EQU 0x0b8000
 VGA_SCREEN_HEIGHT EQU 25
 VGA_SCREEN_WIDTH EQU 160
 
@@ -28,7 +29,7 @@ load_gdt:
     or al, 1
     mov cr0, eax
 
-    jmp CODE_SEG:code_32bit + MBR_ENTRY_ADDRESS
+    jmp CODE_SEG:code_32bit + MBR_ENTRY_ADDRESS     ; set CS register to GDT code segment descriptor
 
 code_32bit:
 BITS 32     ; add the 32 bit prefix to all the instructions after this
@@ -46,13 +47,13 @@ ALIGN 4     ; align memory to 4 byte / 32 bit
 
     ; print company logo on the bottom left
     mov si, company_logo + MBR_ENTRY_ADDRESS    ; need to offset the address because the GDT entry states the base address offset is 0x0
-    mov ebx, VIDEOMEM + ((VGA_SCREEN_WIDTH) * (VGA_SCREEN_HEIGHT - 1))
+    mov ebx, VGA_VIDEOMEM + ((VGA_SCREEN_WIDTH) * (VGA_SCREEN_HEIGHT - 1))  ; start writing string at the bottom left of the VGA area
     call print_vga_string_32bit
 
 halt:
-    cli
-    hlt
-    jmp halt
+    cli     ; disable interrupts
+    hlt     ; halt the processor until the next interrupt happens, which should be never
+    jmp halt    ; should never reach this point
 
 ; print string
 ; IN
