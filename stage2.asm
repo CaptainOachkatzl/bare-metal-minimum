@@ -8,18 +8,11 @@ MBR_ENTRY_ADDRESS EQU 0x7C00
 CODE_SEG EQU codedesc - gdt32   ; offset of the code segment selector in the GDP
 DATA_SEG EQU datadesc - gdt32   ; offset of the data segment selector in the GDP
 
-ALIGN 4
-
-BITS 16
-
-debug:
-    mov bx, 0xDEB0
-    call real_mode_print_hex
-loop16:
-    jmp loop16
-
 VGA_SCREEN_HEIGHT EQU 25
 VGA_SCREEN_WIDTH EQU 160
+
+BITS 16
+ALIGN 4
 
 _stage2:
     mov si, stage2_loading_string
