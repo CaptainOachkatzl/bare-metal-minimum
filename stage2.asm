@@ -47,6 +47,11 @@ clear_prefetch:
     mov ss, ax
     mov esp, STACK32_TOP
 
+halt:
+    cli
+    hlt
+    jmp halt
+
     ; long jmp to 0x8:code_bit32
     db 0x66
     db 0xEA
