@@ -26,11 +26,15 @@ _start:
 load_sector2:
 ; boot drive is stored in DL by bios
     mov  al, 0x01           ; load 1 sector
-    mov  bx, 0x7E00         ; destination, right after your bootloader
+    mov  bx, 0x7E00         ; destination, right after the MBR
     mov  cx, 0x0002         ; cylinder 0, sector 2
     xor  dh, dh             ; head 0
     call read_sectors_16
     jc error                ; if carry flag is set, disk read failed
+
+    mov si, diskload_stage2_string
+    call real_mode_print_string
+    call real_mode_new_line
 
 enable_a20:
 ; enable A20-Line via IO-Port 92
@@ -147,6 +151,8 @@ real_mode_print_char:
 
 stage1_loading_string:
     db 'Stage 1...', 0
+diskload_stage2_string:
+    db 'Loaded stage 2 from disk', 0
 enabled_a20_string:
     db 'Enabled A20 line', 0
 error_loading_string:
