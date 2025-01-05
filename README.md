@@ -1,5 +1,6 @@
 This is the minimum you have to do, to get a program to run on a x86_64 architecture with legacy BIOS.  
 Navigate to <a href=".vscode/tasks.json">.vscode/tasks.json</a> to see the step by step commands.  
+Other examples can be found in the different branches of this project.
   
 Documentation:  
 "assembler.asm" is the program that the BIOS is going to run. The first line "global \_start" is exposing the address so the linker can find it.  
